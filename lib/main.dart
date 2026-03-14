@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/connection_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/trust_screen.dart';
+import 'screens/exchange_screen.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
@@ -17,10 +18,11 @@ return MaterialApp(
   debugShowCheckedModeBanner: false,
 
   routes: {
-    "/": (context) => const HomeScreen(),
-    "/connect": (context) => const ConnectionScreen(),
-    "/trust": (context) => const TrustScreen(),
-  },
+  "/": (context) => const HomeScreen(),
+  "/connect": (context) => const ConnectionScreen(),
+  "/trust": (context) => const TrustScreen(),
+  "/exchange": (context) => const ExchangeScreen(),
+},
 );
   }
 }
