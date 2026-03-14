@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'screens/connection_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/trust_screen.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
@@ -10,11 +13,15 @@ class TapDropApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'TapDrop',
-      debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
-    );
+return MaterialApp(
+  debugShowCheckedModeBanner: false,
+
+  routes: {
+    "/": (context) => const HomeScreen(),
+    "/connect": (context) => const ConnectionScreen(),
+    "/trust": (context) => const TrustScreen(),
+  },
+);
   }
 }
 
@@ -44,13 +51,17 @@ class _HomeScreenState extends State<HomeScreen> {
   pollingOptions: {NfcPollingOption.iso14443, NfcPollingOption.iso15693},
   onDiscovered: (NfcTag tag) async {
 
-        setState(() {
-          message = "Device detected 🎉";
-        });
+  await NfcManager.instance.stopSession();
 
-        await NfcManager.instance.stopSession();
-      },
-    );
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const ConnectionScreen(),
+    ),
+  );
+
+});
+
   }
 
   @override
