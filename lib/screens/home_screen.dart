@@ -1,60 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:nfc_manager/nfc_manager.dart';
-import 'connection_screen.dart';
+import '../services/nfc_service.dart';
+import '../widgets/app_colors.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-    startNFC();
-  }
-
-  void startNFC() async {
-
-    bool isAvailable = await NfcManager.instance.isAvailable();
-
-    if (!isAvailable) {
-      print("NFC not available");
-      return;
-    }
-
-    NfcManager.instance.startSession(
-      pollingOptions: {NfcPollingOption.iso14443},
-      onDiscovered: (NfcTag tag) async {
-
-        await NfcManager.instance.stopSession();
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ConnectionScreen(),
-          ),
-        );
-
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6FFF6),
-      body: const Center(
-        child: Text(
-          "Tap phones to connect",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+      backgroundColor: AppColors.background,
+
+      appBar: AppBar(
+        title: const Text("TapDrop"),
+        centerTitle: true,
+      ),
+
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            const Icon(
+              Icons.nfc,
+              size: 120,
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "Tap phones to share",
+              style: TextStyle(fontSize: 22),
+            ),
+
+            const SizedBox(height: 40),
+
+            ElevatedButton(
+              onPressed: () {
+
+                NfcService.startListening(
+
+                  // Trusted device
+                  () {
+                    Navigator.pushNamed(context, "/exchange");
+                  },
+
+                  // New device
+                  () {
+                    Navigator.pushNamed(context, "/trust");
+                  },
+
+                );
+
+              },
+
+              child: const Text(
+                "Tap to Connect",
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+
+          ],
         ),
       ),
     );

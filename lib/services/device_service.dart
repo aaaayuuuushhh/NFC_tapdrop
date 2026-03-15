@@ -1,25 +1,18 @@
-import 'dart:math';
-import 'dart:convert';
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceService {
 
-  static String deviceId = generateDeviceId();
+  static Future<String> getDeviceName() async {
 
-  static String generateDeviceId() {
-    final random = Random();
-    return List.generate(6, (_) => random.nextInt(9)).join();
-  }
+    final deviceInfo = DeviceInfoPlugin();
 
-  static String getDeviceName() {
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.model ?? "Android Device";
+    }
+
     return "TapDrop Device";
   }
 
-  static String createHandshake() {
-
-    return jsonEncode({
-      "deviceId": deviceId,
-      "deviceName": getDeviceName()
-    });
-
-  }
 }

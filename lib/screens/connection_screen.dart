@@ -59,9 +59,10 @@ class _ConnectionScreenState extends State<ConnectionScreen>
     setState(() {
       connected = true;
     });
+
     await Future.delayed(const Duration(seconds: 1));
 
-Navigator.pushReplacementNamed(context, "/trust");
+    Navigator.pushReplacementNamed(context, "/trust");
   }
 
   @override
@@ -94,15 +95,36 @@ Navigator.pushReplacementNamed(context, "/trust");
 
     return Scaffold(
       backgroundColor: AppColors.background,
+
       body: Center(
         child: connected
-            ? Text(
-                "Connecting to ${DeviceService.getDeviceName()}",
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+
+            // DEVICE NAME DISPLAY
+            ? FutureBuilder<String>(
+                future: DeviceService.getDeviceName(),
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+                    return const Text(
+                      "Connecting...",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }
+
+                  return Text(
+                    "Connecting to ${snapshot.data}",
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               )
+
+            // ANIMATION
             : Stack(
                 alignment: Alignment.center,
                 children: [
