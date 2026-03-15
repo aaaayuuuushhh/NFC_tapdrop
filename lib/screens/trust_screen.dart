@@ -35,14 +35,29 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              Text(
-                DeviceService.getDeviceName(),
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.black54,
-                ),
-              ),
+              FutureBuilder<String>(
+  future: DeviceService.getDeviceName(),
+  builder: (context, snapshot) {
 
+    if (!snapshot.hasData) {
+      return const Text(
+        "Loading device...",
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black54,
+        ),
+      );
+    }
+
+    return Text(
+      snapshot.data!,
+      style: const TextStyle(
+        fontSize: 18,
+        color: Colors.black54,
+      ),
+    );
+  },
+),
               const SizedBox(height: 50),
 
               // TRUST ONCE BUTTON

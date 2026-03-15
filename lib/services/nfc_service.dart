@@ -1,6 +1,6 @@
 import 'package:nfc_manager/nfc_manager.dart';
 import 'trust_service.dart';
-
+import 'device_service.dart';
 class NfcService {
 
   // Check if NFC is available
@@ -21,8 +21,8 @@ class NfcService {
 
         print("NFC device detected");
 
-        // Temporary device id for testing
-        String deviceId = "device123";
+        
+        String deviceId = await DeviceService.getDeviceId();
 
         bool trusted = await TrustService.isTrusted(deviceId);
 
