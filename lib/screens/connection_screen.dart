@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_colors.dart';
+import '../services/device_service.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({super.key});
@@ -95,9 +96,9 @@ Navigator.pushReplacementNamed(context, "/trust");
       backgroundColor: AppColors.background,
       body: Center(
         child: connected
-            ? const Text(
-                "Connected ✓",
-                style: TextStyle(
+            ? Text(
+                "Connecting to ${DeviceService.getDeviceName()}",
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),

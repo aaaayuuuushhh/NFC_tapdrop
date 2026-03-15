@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_colors.dart';
+import '../services/device_service.dart';
+import '../services/trust_service.dart';
 
 class TrustScreen extends StatelessWidget {
   const TrustScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
@@ -34,9 +35,9 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              const Text(
-                "Rahul's Phone",
-                style: TextStyle(
+              Text(
+                DeviceService.getDeviceName(),
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black54,
                 ),
@@ -44,18 +45,17 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 50),
 
+              // TRUST ONCE BUTTON
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
                   minimumSize: const Size(double.infinity, 55),
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 onPressed: () {
-
                   Navigator.pushNamed(context, "/exchange");
-
                 },
                 child: const Text(
                   "Trust Once",
@@ -68,6 +68,7 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              // TRUST ALWAYS BUTTON
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 55),
@@ -76,7 +77,9 @@ class TrustScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+
+                  await TrustService.trustDevice("device123");
 
                   Navigator.pushNamed(context, "/exchange");
 
