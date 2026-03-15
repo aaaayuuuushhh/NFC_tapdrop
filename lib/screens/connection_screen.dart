@@ -48,22 +48,23 @@ class _ConnectionScreenState extends State<ConnectionScreen>
 
   void startAnimation() async {
 
-    rippleController.forward();
+  rippleController.repeat();
 
-    await Future.delayed(const Duration(milliseconds: 800));
+  await Future.delayed(const Duration(seconds: 1));
 
-    circleController.forward();
+  circleController.forward();
 
-    await Future.delayed(const Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 2));
 
-    setState(() {
-      connected = true;
-    });
+  setState(() {
+    connected = true;
+  });
 
-    await Future.delayed(const Duration(seconds: 1));
+  await Future.delayed(const Duration(seconds: 2));
 
-    Navigator.pushReplacementNamed(context, "/trust");
-  }
+  Navigator.pushReplacementNamed(context, "/trust");
+
+}
 
   @override
   void dispose() {

@@ -4,6 +4,8 @@ import 'screens/home_screen.dart';
 import 'screens/trust_screen.dart';
 import 'screens/exchange_screen.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'screens/profile_setup_screen.dart';
+import 'screens/profile_card_screen.dart';
 
 void main() {
   runApp(const TapDropApp());
@@ -22,6 +24,8 @@ return MaterialApp(
   "/connect": (context) => const ConnectionScreen(),
   "/trust": (context) => const TrustScreen(),
   "/exchange": (context) => const ExchangeScreen(),
+  "/profile": (context) => const ProfileSetupScreen(),
+  "/profile_card": (context) => const ProfileCardScreen(),
 },
 );
   }

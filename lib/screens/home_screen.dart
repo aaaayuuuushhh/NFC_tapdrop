@@ -59,7 +59,12 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
             ),
-
+ElevatedButton(
+  onPressed: () {
+    Navigator.pushNamed(context, "/profile");
+  },
+  child: const Text("Setup Profile"),
+)
           ],
         ),
       ),
