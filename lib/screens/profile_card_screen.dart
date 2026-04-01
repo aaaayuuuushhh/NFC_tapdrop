@@ -21,26 +21,25 @@ class _ProfileCardScreenState extends State<ProfileCardScreen> {
     loadProfile();
   }
 
-  void loadProfile() async {
-    profile = await ProfileService.getProfile();
+  void loadProfile() {
+    profile = ProfileService.getProfile(); // ✅ FIXED (no await)
     setState(() {});
   }
 
-  Future openUrl(String url) async {
+  // 🔥 OPEN URL
+  Future<void> openUrl(String url) async {
+    final Uri uri = Uri.parse(url);
 
-    Uri uri = Uri.parse(url);
-
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      debugPrint("Could not launch $url");
     }
   }
 
+  // 🔥 BUTTON BUILDER
   Widget buildButton(String title, IconData icon, String url) {
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: ElevatedButton.icon(
-
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           minimumSize: const Size(double.infinity, 55),
@@ -48,14 +47,9 @@ class _ProfileCardScreenState extends State<ProfileCardScreen> {
             borderRadius: BorderRadius.circular(25),
           ),
         ),
-
-        onPressed: () {
-          openUrl(url);
-        },
-
+        onPressed: () => openUrl(url),
         icon: Icon(icon),
         label: Text(title),
-
       ),
     );
   }
@@ -65,22 +59,25 @@ class _ProfileCardScreenState extends State<ProfileCardScreen> {
 
     if (profile == null) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: Text("No profile found")),
       );
     }
 
     return Scaffold(
-
       backgroundColor: AppColors.background,
 
-      body: Padding(
+      appBar: AppBar(
+        title: const Text("Profile Card"),
+        centerTitle: true,
+      ),
+
+      body: SingleChildScrollView( // ✅ FIX OVERFLOW
         padding: const EdgeInsets.all(25),
 
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
 
+            // 🔹 NAME
             Text(
               profile!.name,
               style: const TextStyle(
@@ -91,36 +88,50 @@ class _ProfileCardScreenState extends State<ProfileCardScreen> {
 
             const SizedBox(height: 40),
 
-            buildButton(
-              "Instagram",
-              Icons.camera_alt,
-              "https://instagram.com/${profile!.instagram}",
-            ),
+            // 🔹 INSTAGRAM
+            if (profile!.instagram != null &&
+                profile!.instagram!.isNotEmpty)
+              buildButton(
+                "Instagram",
+                Icons.camera_alt,
+                "https://instagram.com/${profile!.instagram}",
+              ),
 
-            buildButton(
-              "LinkedIn",
-              Icons.work,
-              "https://linkedin.com/in/${profile!.linkedin}",
-            ),
+            // 🔹 LINKEDIN
+            if (profile!.linkedin != null &&
+                profile!.linkedin!.isNotEmpty)
+              buildButton(
+                "LinkedIn",
+                Icons.work,
+                "https://linkedin.com/in/${profile!.linkedin}",
+              ),
 
-            buildButton(
-              "UPI Pay",
-              Icons.account_balance_wallet,
-              "upi://pay?pa=${profile!.upi}",
-            ),
+            // 🔹 UPI
+            if (profile!.upi != null &&
+                profile!.upi!.isNotEmpty)
+              buildButton(
+                "UPI Pay",
+                Icons.account_balance_wallet,
+                "upi://pay?pa=${profile!.upi}&pn=${profile!.name}",
+              ),
 
-            buildButton(
-              "Email",
-              Icons.email,
-              "mailto:${profile!.email}",
-            ),
+            // 🔹 EMAIL
+            if (profile!.email != null &&
+                profile!.email!.isNotEmpty)
+              buildButton(
+                "Email",
+                Icons.email,
+                "mailto:${profile!.email}",
+              ),
 
-            buildButton(
-              "Call",
-              Icons.phone,
-              "tel:${profile!.phone}",
-            ),
-
+            // 🔹 PHONE
+            if (profile!.phone != null &&
+                profile!.phone!.isNotEmpty)
+              buildButton(
+                "Call",
+                Icons.phone,
+                "tel:${profile!.phone}",
+              ),
           ],
         ),
       ),

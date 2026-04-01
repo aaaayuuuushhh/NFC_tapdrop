@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_colors.dart';
-import '../services/device_service.dart';
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({super.key});
@@ -20,10 +19,20 @@ class _ConnectionScreenState extends State<ConnectionScreen>
   late Animation<double> rightMove;
 
   bool connected = false;
+  String deviceId = "unknown";
 
   @override
   void initState() {
     super.initState();
+
+    // 🔥 GET DEVICE ID FROM NFC (IMPORTANT)
+    Future.delayed(Duration.zero, () {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as String?;
+      if (args != null) {
+        deviceId = args;
+      }
+    });
 
     rippleController =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
@@ -48,23 +57,29 @@ class _ConnectionScreenState extends State<ConnectionScreen>
 
   void startAnimation() async {
 
-  rippleController.repeat();
+    rippleController.repeat();
 
-  await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
-  circleController.forward();
+    circleController.forward();
 
-  await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
-  setState(() {
-    connected = true;
-  });
+    setState(() {
+      connected = true;
+    });
 
-  await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
-  Navigator.pushReplacementNamed(context, "/trust");
+    if (!mounted) return;
 
-}
+    // 🔥 PASS DEVICE ID FOR TRUST SYSTEM
+    Navigator.pushReplacementNamed(
+      context,
+      "/trust",
+      arguments: deviceId,
+    );
+  }
 
   @override
   void dispose() {
@@ -100,32 +115,16 @@ class _ConnectionScreenState extends State<ConnectionScreen>
       body: Center(
         child: connected
 
-            // DEVICE NAME DISPLAY
-            ? FutureBuilder<String>(
-                future: DeviceService.getDeviceName(),
-                builder: (context, snapshot) {
-
-                  if (!snapshot.hasData) {
-                    return const Text(
-                      "Connecting...",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  }
-
-                  return Text(
-                    "Connecting to ${snapshot.data}",
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                },
+            // ✅ SHOW CONNECTED DEVICE
+            ? Text(
+                "Connected to device",
+                style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
               )
 
-            // ANIMATION
+            // 🔥 ANIMATION
             : Stack(
                 alignment: Alignment.center,
                 children: [

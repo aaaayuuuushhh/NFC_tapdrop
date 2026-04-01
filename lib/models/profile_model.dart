@@ -2,7 +2,7 @@ class ProfileModel {
   final String id;
   final String name;
 
-  // IDs
+  // 🔹 Social / Contact IDs
   final String? instagram;
   final String? linkedin;
   final String? email;
@@ -10,7 +10,7 @@ class ProfileModel {
   final String? upi;
   final String? x; // Twitter
 
-  // Card Design
+  // 🔹 Card Customization (future ready)
   final String? cardType; // minimal, glass, gradient
   final List<String>? gradientColors;
   final String? fontStyle;
@@ -29,8 +29,8 @@ class ProfileModel {
     this.fontStyle,
   });
 
-  // Convert to Map (for storage later)
-  Map<String, dynamic> toMap() {
+  // 🔥 Convert to JSON (for storage)
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
@@ -46,22 +46,51 @@ class ProfileModel {
     };
   }
 
-  // Convert from Map
-  factory ProfileModel.fromMap(Map<String, dynamic> map) {
+  // 🔥 Convert from JSON
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      id: map['id'],
-      name: map['name'],
-      instagram: map['instagram'],
-      linkedin: map['linkedin'],
-      email: map['email'],
-      phone: map['phone'],
-      upi: map['upi'],
-      x: map['x'],
-      cardType: map['cardType'],
-      gradientColors: map['gradientColors'] != null
-          ? List<String>.from(map['gradientColors'])
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      instagram: json['instagram'],
+      linkedin: json['linkedin'],
+      email: json['email'],
+      phone: json['phone'],
+      upi: json['upi'],
+      x: json['x'],
+      cardType: json['cardType'],
+      gradientColors: json['gradientColors'] != null
+          ? List<String>.from(json['gradientColors'])
           : null,
-      fontStyle: map['fontStyle'],
+      fontStyle: json['fontStyle'],
+    );
+  }
+
+  // 🔥 Copy method (VERY useful later)
+  ProfileModel copyWith({
+    String? id,
+    String? name,
+    String? instagram,
+    String? linkedin,
+    String? email,
+    String? phone,
+    String? upi,
+    String? x,
+    String? cardType,
+    List<String>? gradientColors,
+    String? fontStyle,
+  }) {
+    return ProfileModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      instagram: instagram ?? this.instagram,
+      linkedin: linkedin ?? this.linkedin,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      upi: upi ?? this.upi,
+      x: x ?? this.x,
+      cardType: cardType ?? this.cardType,
+      gradientColors: gradientColors ?? this.gradientColors,
+      fontStyle: fontStyle ?? this.fontStyle,
     );
   }
 }

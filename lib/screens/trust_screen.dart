@@ -8,11 +8,18 @@ class TrustScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // 🔥 RECEIVE DEVICE ID FROM PREVIOUS SCREEN
+    final String deviceId =
+        ModalRoute.of(context)?.settings.arguments as String? ?? "unknown";
+
     return Scaffold(
       backgroundColor: AppColors.background,
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(30),
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -35,32 +42,34 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 10),
 
+              // 🔥 DEVICE NAME
               FutureBuilder<String>(
-  future: DeviceService.getDeviceName(),
-  builder: (context, snapshot) {
+                future: DeviceService.getDeviceName(),
+                builder: (context, snapshot) {
 
-    if (!snapshot.hasData) {
-      return const Text(
-        "Loading device...",
-        style: TextStyle(
-          fontSize: 18,
-          color: Colors.black54,
-        ),
-      );
-    }
+                  if (!snapshot.hasData) {
+                    return const Text(
+                      "Loading device...",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black54,
+                      ),
+                    );
+                  }
 
-    return Text(
-      snapshot.data!,
-      style: const TextStyle(
-        fontSize: 18,
-        color: Colors.black54,
-      ),
-    );
-  },
-),
+                  return Text(
+                    snapshot.data!,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black54,
+                    ),
+                  );
+                },
+              ),
+
               const SizedBox(height: 50),
 
-              // TRUST ONCE BUTTON
+              // 🔹 TRUST ONCE
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 55),
@@ -83,7 +92,7 @@ class TrustScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // TRUST ALWAYS BUTTON
+              // 🔹 TRUST ALWAYS
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 55),
@@ -94,10 +103,10 @@ class TrustScreen extends StatelessWidget {
                 ),
                 onPressed: () async {
 
-                  await TrustService.trustDevice("device123");
+                  // ✅ SAVE REAL DEVICE ID
+                  await TrustService.trustDevice(deviceId);
 
                   Navigator.pushNamed(context, "/exchange");
-
                 },
                 child: const Text(
                   "Trust Always",

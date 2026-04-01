@@ -18,66 +18,89 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final phoneController = TextEditingController();
   final upiController = TextEditingController();
 
-  void saveProfile() {
+  // 🔥 SAVE PROFILE
+  Future<void> saveProfile() async {
+
+    if (nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Name is required")),
+      );
+      return;
+    }
+
     final profile = ProfileModel(
-      id: DateTime.now().toString(),
-      name: nameController.text,
-      instagram: instagramController.text,
-      linkedin: linkedinController.text,
-      email: emailController.text,
-      phone: phoneController.text,
-      upi: upiController.text,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: nameController.text.trim(),
+      instagram: instagramController.text.trim(),
+      linkedin: linkedinController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      upi: upiController.text.trim(),
     );
 
-    ProfileService.saveProfile(profile);
+    await ProfileService.saveProfile(profile);
 
-    Navigator.pushReplacementNamed(context, "/"); // go back to home
+    if (!mounted) return;
+
+    Navigator.pushReplacementNamed(context, "/");
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    instagramController.dispose();
+    linkedinController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    upiController.dispose();
+    super.dispose();
+  }
+
+  Widget buildTextField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Setup Profile")),
+      appBar: AppBar(
+        title: const Text("Setup Profile"),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
 
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: "Name"),
-            ),
+            buildTextField("Name", nameController),
+            buildTextField("Instagram", instagramController),
+            buildTextField("LinkedIn", linkedinController),
+            buildTextField("Email", emailController),
+            buildTextField("Phone", phoneController),
+            buildTextField("UPI", upiController),
 
-            TextField(
-              controller: instagramController,
-              decoration: const InputDecoration(labelText: "Instagram"),
-            ),
-
-            TextField(
-              controller: linkedinController,
-              decoration: const InputDecoration(labelText: "LinkedIn"),
-            ),
-
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
-
-            TextField(
-              controller: phoneController,
-              decoration: const InputDecoration(labelText: "Phone"),
-            ),
-
-            TextField(
-              controller: upiController,
-              decoration: const InputDecoration(labelText: "UPI"),
-            ),
-
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             ElevatedButton(
               onPressed: saveProfile,
-              child: const Text("Save Profile"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+              ),
+              child: const Text(
+                "Save Profile",
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
